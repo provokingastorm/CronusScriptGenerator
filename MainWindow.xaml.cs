@@ -12,6 +12,7 @@ namespace WpfTextTool
         private string _scriptFooterText = "}\n";
         private string _scriptExecuteText = String.Empty;
         private DateTime _lastButtonPress = DateTime.MinValue;
+        private string _inputCommands = "ABXYUDLR";
 
         public MainWindow()
         {
@@ -42,6 +43,64 @@ namespace WpfTextTool
                 return true;
             }
             return false;
+        }
+
+        private bool IsValidInputCommand(char inputCommand)
+        {
+            if (inputCommand == 'A'
+                || inputCommand == 'B'
+                || inputCommand == 'X'
+                || inputCommand == 'Y'
+                || inputCommand == 'U'
+                || inputCommand == 'D'
+                || inputCommand == 'L'
+                || inputCommand == 'R'
+                )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private string CovertInputCommandToCronusCommand(char inputCommand)
+        {
+            string cronusCommand = "";
+
+            if (inputCommand == 'A')
+            {
+                cronusCommand = "XB360_A";
+            }
+            else if (inputCommand == 'B')
+            {
+                cronusCommand = "XB360_B";
+            }
+            else if (inputCommand == 'X')
+            {
+                cronusCommand = "XB360_X";
+            }
+            else if (inputCommand == 'Y')
+            {
+                cronusCommand = "XB360_Y";
+            }
+            else if (inputCommand == 'U')
+            {
+                cronusCommand = "XB360_UP";
+            }
+            else if (inputCommand == 'D')
+            {
+                cronusCommand = "XB360_DOWN";
+            }
+            else if (inputCommand == 'L')
+            {
+                cronusCommand = "XB360_LEFT";
+            }
+            else if (inputCommand == 'R')
+            {
+                cronusCommand = "XB360_RIGHT";
+            }
+
+            return cronusCommand;
         }
 
         // ── Import ─────────────────────────────────────────────────────────────
@@ -80,15 +139,36 @@ namespace WpfTextTool
                 Title = "Generate Cronus Script",
                 Filter = "GPC Files (*.gpc)|*.gpc|All Files (*.*)|*.*",
                 DefaultExt = ".gpc",
-                FileName = "exported"
+                FileName = "script1"
             };
 
             if (dialog.ShowDialog() == true)
             {
+                // Convert the input commands, if valid, to cronus script text
+                char[] commands = _inputCommands.ToCharArray();
+                for (int index = 0; index < commands.Length; index++)
+                {
+                    if (IsValidInputCommand(commands[index]) )
+                    {
+                        string cronusCommand = CovertInputCommandToCronusCommand(commands[index]);
+                        if (cronusCommand != "")
+                        {
+                            _scriptExecuteText += "\tset_val(" + cronusCommand + ", 100);\n\twait(30);\n\tset_val(" + cronusCommand + ", 0);\n";
+
+                            int delay = GetMsDelay();
+                            if (delay > 0)
+                            {
+                                _scriptExecuteText += "\n\twait(" + delay + ");\n\n";
+                            }
+                        }
+                    }
+                }
+
+                string scriptNameComment = "// " + dialog.SafeFileName + "\n\n";
+                string[] fullScript = { scriptNameComment, _scriptHeaderText, _scriptExecuteText, _scriptFooterText };
+
                 try
                 {
-                    string scriptNameComment = "// " + dialog.SafeFileName + "\n\n";
-                    string[] fullScript = { scriptNameComment, _scriptHeaderText, _scriptExecuteText, _scriptFooterText };
                     File.WriteAllLines(dialog.FileName, fullScript);
                     _lastButtonPress = DateTime.Now;
                     MessageBox.Show("File exported successfully.",
