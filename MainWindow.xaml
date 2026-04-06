@@ -118,7 +118,7 @@
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -133,7 +133,7 @@
                    Foreground="#111827"/>
 
         <!-- Import / Export Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
 
             <Button x:Name="ExportButton"
                     Content="⬇  Generate Cronus Script"
@@ -147,29 +147,7 @@
                     Margin="12,0,12,0"/>
         </StackPanel>
 
-        <!-- ms delay input — anchored bottom-right -->
-        <StackPanel Grid.Row="3" Grid.RowSpan="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom">
-
-            <TextBox x:Name="MsTextBox"
-                     Style="{StaticResource NumberInput}"
-                     Width="72"
-                     Height="50"
-                     MaxLength="5"
-                     Text="500"
-                     Margin="0,8,8,8"
-                     PreviewTextInput="MsTextBox_TimeDelayTextInput"
-                     DataObject.Pasting="MsTextBox_Pasting"/>
-
-            <TextBlock Text="ms between button presses"
-                       FontSize="12"
-                       Foreground="#374151"
-                       VerticalAlignment="Center"/>
-        </StackPanel>
-
-        <StackPanel Grid.Row="4" Grid.RowSpan="1"
+        <StackPanel Grid.Row="2" Grid.RowSpan="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom">
@@ -177,11 +155,11 @@
             <TextBlock Text="Input Button Sequence:"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="5" Grid.RowSpan="1"
+        <StackPanel Grid.Row="3" Grid.RowSpan="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom">
-            
+
             <TextBox x:Name="SequenceTextBox"
                      VerticalScrollBarVisibility="Visible"
                      Width="400"
@@ -189,8 +167,53 @@
                      MaxLength="100"
                      Margin="0,0,8,0"
                      VerticalAlignment="Top"
-                     PreviewTextInput="MsTextBox_ButtonSequenceTextInput"
-                     DataObject.Pasting="MsTextBox_Pasting"/>
+                     CharacterCasing="Upper"
+                     PreviewTextInput="ButtonSequenceTextBox_TextInput"
+                     DataObject.Pasting="TimeDelayTextBox_Pasting"/>
+        </StackPanel>
+
+        <!-- Input Sequence Configuration Options -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+
+            <TextBox x:Name="RepeatSequenceTextBox"
+                         Style="{StaticResource NumberInput}"
+                         Width="72"
+                         Height="50"
+                         MaxLength="5"
+                         Text="1"
+                         Margin="0,8,8,8"
+                         PreviewTextInput="TimeDelayTextBox_TextInput"
+                         DataObject.Pasting="TimeDelayTextBox_Pasting"/>
+
+            <TextBlock Text="Repeat input"
+                       FontSize="12"
+                       Foreground="#374151"
+                       VerticalAlignment="Center"/>
+
+            <TextBox x:Name="InputDelayTextBox"
+                     Style="{StaticResource NumberInput}"
+                     Width="72"
+                     Height="50"
+                     MaxLength="5"
+                     Text="500"
+                     Margin="20,0,8,0"
+                     PreviewTextInput="TimeDelayTextBox_TextInput"
+                     DataObject.Pasting="TimeDelayTextBox_Pasting"/>
+
+            <TextBlock Text="Input delay (ms)"
+                       FontSize="12"
+                       Foreground="#374151"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+        
+        <!-- Add Input Sequence Button -->
+        <StackPanel Grid.Row="5"  Grid.RowSpan="2"
+                    Orientation="Horizontal">
+            
+            <Button x:Name="AddInputSequenceButton"
+                    Content="Add Input Sequence"
+                    Style="{StaticResource SecondaryButton}"
+                    Click="AddInputSequenceButton_Click"/>
         </StackPanel>
 
     </Grid>
