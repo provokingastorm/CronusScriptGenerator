@@ -120,7 +120,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -156,11 +156,11 @@
             <TextBox x:Name="MsTextBox"
                      Style="{StaticResource NumberInput}"
                      Width="72"
-                     Height="36"
-                     MaxLength="6"
+                     Height="50"
+                     MaxLength="5"
                      Text="500"
-                     Margin="0,0,8,0"
-                     PreviewTextInput="MsTextBox_PreviewTextInput"
+                     Margin="0,8,8,8"
+                     PreviewTextInput="MsTextBox_TimeDelayTextInput"
                      DataObject.Pasting="MsTextBox_Pasting"/>
 
             <TextBlock Text="ms between button presses"
@@ -183,14 +183,13 @@
                     VerticalAlignment="Bottom">
             
             <TextBox x:Name="SequenceTextBox"
-                     Style="{StaticResource NumberInput}"
+                     VerticalScrollBarVisibility="Visible"
                      Width="400"
                      Height="100"
-                     MaxLength="6"
-                     Text="500"
+                     MaxLength="100"
                      Margin="0,0,8,0"
                      VerticalAlignment="Top"
-                     PreviewTextInput="MsTextBox_PreviewTextInput"
+                     PreviewTextInput="MsTextBox_ButtonSequenceTextInput"
                      DataObject.Pasting="MsTextBox_Pasting"/>
         </StackPanel>
 
