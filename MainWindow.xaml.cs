@@ -23,6 +23,10 @@ namespace WpfTextTool
         {
             return int.TryParse(InputDelayTextBox.Text, out int ms) ? ms : 0;
         }
+        private int GetInputSequenceRepeatInstances()
+        {
+            return int.TryParse(RepeatSequenceTextBox.Text, out int repeats) ? repeats : 1;
+        }
 
         private bool IsValidXboxInputCommand(string inputCommand)
         {
@@ -147,9 +151,17 @@ namespace WpfTextTool
 
         private void AddInputSequenceButton_Click(object sender, RoutedEventArgs e)
         {
+            // Input commands are separated by commas. Separate them out to process each input command individually. 
             string[] inputCommands = SequenceTextBox.Text.Split(',');
+
+            // If this string array is empty, then the user didn't type out any input commands. 
             if (!String.IsNullOrEmpty(inputCommands[0]))
             {
+                // Keep track of the new input sequences added locally in case there are issues with any of the input commands. 
+                bool appendInputSequences = true;
+                string additionalInputSequences = "";
+                int delay = GetMsDelay();
+
                 for (int i = 0; i < inputCommands.Length; i++)
                 {
                     if (IsValidXboxInputCommand(inputCommands[i]))
@@ -157,19 +169,34 @@ namespace WpfTextTool
                         string cronusCommand = CovertXboxInputToCronusCommand(inputCommands[i]);
                         if (cronusCommand != "")
                         {
-                            _scriptExecuteText += "\tset_val(" + cronusCommand + ", 100);\n\twait(30);\n\tset_val(" + cronusCommand + ", 0);\n";
+                            additionalInputSequences += "\tset_val(" + cronusCommand + ", 100);\n\twait(30);\n\tset_val(" + cronusCommand + ", 0);\n";
 
-                            int delay = GetMsDelay();
                             if (delay > 0)
                             {
-                                _scriptExecuteText += "\n\twait(" + delay + ");\n\n";
+                                additionalInputSequences += "\n\twait(" + delay + ");\n\n";
                             }
                         }
                     }
                     else
                     {
+                        appendInputSequences = false;
                         MessageBox.Show($"Unable to process input sequence: {inputCommands[i]}.",
                             "Add Input Sequence Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        break;
+                    }
+                }
+
+                if (appendInputSequences && !String.IsNullOrEmpty(additionalInputSequences))
+                {
+                    _scriptExecuteText += additionalInputSequences;
+
+                    int repeatInstances = GetInputSequenceRepeatInstances();
+                    if (repeatInstances > 1)
+                    {
+                        for (int index = repeatInstances - 1; index > 0; index--)
+                        {
+                            _scriptExecuteText += additionalInputSequences;
+                        }
                     }
                 }
             }
